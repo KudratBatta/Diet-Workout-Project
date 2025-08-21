@@ -236,3 +236,38 @@ ul li {
 ::-webkit-scrollbar-thumb:hover {
     background: #999;
 }
+/* 📱 Mobile Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;   /* Stack form and image vertically */
+        width: 95%;
+        height: auto;
+    }
+
+    .left-form, .right-graphic {
+        flex: none;
+        width: 100%;
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    form input, form select {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .right-graphic img {
+        max-width: 90%;
+        height: auto;
+        border-radius: 10px;
+    }
+}
+
