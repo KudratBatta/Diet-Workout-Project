@@ -3,174 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIT AURA - Health Recommendations</title>
     <link rel="stylesheet" href="/static/style.css">
+    <title>Fit Aura</title>
 </head>
 <body>
-    <section class="main-section">
+    <div class="wrapper">
+        <h1>FIT AURA</h1>
+        <p class="subtitle">Personalized Diet & Workout Planner</p>
+
         <div class="container">
-            <div class="left-form">
-                <div class="header-box">
-                    <h1>FIT AURA</h1>
-                    <h2>Personalized Diet & Workout Planner</h2>
-                 </div>
-                <h4> Enter Your Details here-></h4>
-                <form method="POST" id="healthForm">
-                    <div class="form-group">
-                        <label for="age">Age:</label>
-                        <input type="number" id="age" name="age" min="10" max="100" value="{{ request.form.age if request.form }}" required>
-                    </div>
+            <div class="card left-section">
+                <h2>Enter Your Details here -></h2>
+                <form method="POST">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" 
+                           value="{{ form_data.age if form_data else '' }}" required>
 
-                    <div class="form-group">
-                        <label for="gender">Gender:</label>
-                        <select id="gender" name="gender" required>
-                            <option value="">--Select--</option>
-                            <option value="Male" {% if request.form.gender == 'Male' %}selected{% endif %}>Male</option>
-                            <option value="Female" {% if request.form.gender == 'Female' %}selected{% endif %}>Female</option>
-                        </select>
-                    </div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" required>
+                        <option value="" disabled {% if not form_data %}selected{% endif %}>-- Select Gender --</option>
+                        <option value="Male" {% if form_data and form_data.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if form_data and form_data.gender == 'Female' %}selected{% endif %}>Female</option>
+                    </select>
 
-                    <div class="form-group">
-                        <label for="height">Height (cm):</label>
-                        <input type="number" id="height" name="height" min="100" max="220" value="{{ request.form.height if request.form }}" required>
-                    </div>
+                    <label for="height">Height (cm):</label>
+                    <input type="number" id="height" name="height" 
+                           value="{{ form_data.height if form_data else '' }}" required>
 
-                    <div class="form-group">
-                        <label for="weight">Weight (kg):</label>
-                        <input type="number" id="weight" name="weight" min="30" max="200" value="{{ request.form.weight if request.form }}" required>
-                    </div>
+                    <label for="weight">Weight (kg):</label>
+                    <input type="number" id="weight" name="weight" 
+                           value="{{ form_data.weight if form_data else '' }}" required>
 
-                    <div class="form-group">
-                        <label for="diet">Diet Preference:</label>
-                        <select id="diet" name="diet" required>
-                            <option value="">--Select--</option>
-                            <option value="Vegetarian" {% if request.form.diet == 'Vegetarian' %}selected{% endif %}>Vegetarian</option>
-                            <option value="Non-Vegetarian" {% if request.form.diet == 'Non-Vegetarian' %}selected{% endif %}>Non-Vegetarian</option>
-                            <option value="Vegan" {% if request.form.diet == 'Vegan' %}selected{% endif %}>Vegan</option>
-                        </select>
-                    </div>
+                    <label for="diet">Diet Preference:</label>
+                    <select id="diet" name="diet" required>
+                        <option value="" disabled {% if not form_data %}selected{% endif %}>-- Select Diet --</option>
+                        <option value="Vegetarian" {% if form_data and form_data.diet == 'Vegetarian' %}selected{% endif %}>Vegetarian</option>
+                        <option value="Non-Vegetarian" {% if form_data and form_data.diet == 'Non-Vegetarian' %}selected{% endif %}>Non-Vegetarian</option>
+                        <option value="Vegan" {% if form_data and form_data.diet == 'Vegan' %}selected{% endif %}>Vegan</option>
+                    </select>
 
-                    <div class="form-group">
-                        <label for="exercise">Exercise Preference:</label>
-                        <select id="exercise" name="exercise" required>
-                            <option value="">--Select--</option>
-                            <option value="Cardio" {% if request.form.exercise == 'Cardio' %}selected{% endif %}>Cardio</option>
-                            <option value="Strength Training" {% if request.form.exercise == 'Strength Training' %}selected{% endif %}>Strength Training</option>
-                            <option value="Yoga" {% if request.form.exercise == 'Yoga' %}selected{% endif %}>Yoga</option>
-                        </select>
-                    </div>
+                    <label for="exercise">Exercise Preference:</label>
+                    <select id="exercise" name="exercise" required>
+                        <option value="" disabled {% if not form_data %}selected{% endif %}>-- Select Exercise --</option>
+                        <option value="Cardio" {% if form_data and form_data.exercise == 'Cardio' %}selected{% endif %}>Cardio</option>
+                        <option value="Strength Training" {% if form_data and form_data.exercise == 'Strength Training' %}selected{% endif %}>Strength Training</option>
+                        <option value="Yoga" {% if form_data and form_data.exercise == 'Yoga' %}selected{% endif %}>Yoga</option>
+                    </select>
 
-                    <button type="submit" class="btn">Generate My Plan</button>
+                    <button type="submit">Generate My Plan</button>
                 </form>
 
                 {% if prediction %}
-                <div class="results-section">
-                    <div class="health-summary">
-                        <h5><i class="icon-summary"></i><u> Your Health Summary</u></h5>
-                        <div class="summary-grid">
-                            <div class="summary-item">
-                                <span class="summary-label">BMI Score: </span>
-                                <span class="summary-value">{{ bmi_value }}</span>
-                            </div>
-                            <div class="summary-item">
-                                <span class="summary-label">BMI Category: </span>
-                                <span class="summary-value">{{ bmi_category }}</span>
-                            </div>
-                        
-                        </div>
-                    </div>
+                <div class="results">
+                    <h3>Result: {{ prediction }}</h3>
+                    <p><strong>BMI:</strong> <b>{{ bmi_value }}</b></p>
 
-                    {% if diet_plan %}
-                    <div class="plan-card diet-plan">
-                        <h5><i class="icon-diet"></i><u>Your Daily Diet Plan</u></h5>
-                        <div class="time-slots">
-                            <div class="time-slot morning">
-                                <h4>🌞 Morning</h4>
-                                <ul>
-                                    {% for item in diet_plan.morning %}
-                                    <li>{{ item }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="time-slot afternoon">
-                                <h4>☀️ Afternoon</h4>
-                                <ul>
-                                    {% for item in diet_plan.afternoon %}
-                                    <li>{{ item }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="time-slot evening">
-                                <h4>🌙 Evening</h4>
-                                <ul>
-                                    {% for item in diet_plan.evening %}
-                                    <li>{{ item }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
+                    <h5><u>Diet Plan ({{ diet }}):</u></h5>
+                    <ul>
+                        <li><strong>Morning:</strong> {{ diet_plan['morning']|join(', ') }}</li>
+                        <li><strong>Afternoon:</strong> {{ diet_plan['afternoon']|join(', ') }}</li>
+                        <li><strong>Evening:</strong> {{ diet_plan['evening']|join(', ') }}</li>
+                    </ul>
 
-                    {% if workout_plan %}
-                    <div class="plan-card workout-plan">
-                        <h5><i class="icon-workout"></i> <u>Your Daily Workout Plan</u></h5>
-                        <div class="time-slots">
-                            <div class="time-slot morning">
-                                <h4>🌞 Morning</h4>
-                                <ul>
-                                    {% for item in workout_plan.morning %}
-                                    <li>{{ item }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="time-slot afternoon">
-                                <h4>☀️ Afternoon</h4>
-                                <ul>
-                                    {% for item in workout_plan.afternoon %}
-                                    <li>{{ item }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="time-slot evening">
-                                <h4>🌙 Evening</h4>
-                                <ul>
-                                    {% for item in workout_plan.evening %}
-                                    <li>{{ item }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
+                    <h5><u>Workout Plan ({{ exercise }}):</u></h5>
+                    <ul>
+                        <li><strong>Morning:</strong> {{ workout_plan['morning']|join(', ') }}</li>
+                        <li><strong>Afternoon:</strong> {{ workout_plan['afternoon']|join(', ') }}</li>
+                        <li><strong>Evening:</strong> {{ workout_plan['evening']|join(', ') }}</li>
+                    </ul>
                 </div>
                 {% endif %}
             </div>
-<div class="right-graphic">
-    <div class="right-caption-box">
-        <h3>Your personalized health journey starts here !</h3>
+
+            <div class="card right-section">
+                <h2>Your personalized health journey starts here!</h2>
+                <img src="/static/Health.jpg" alt="Health Image">
+                <p>Fit Aura analyzes your profile and calculates your BMI to understand your health status based on preferences, suggesting suitable diets and workout plans.</p>
+            </div>
+        </div>
     </div>
-    <img src="static/Health.jpg" alt="Health Image" />
-<h3> Fit Aura analyzes your profile and calculates your BMI to understand your health status based, asking for recommended preferences and suggest suitable diets and workout plans.</h3>
-</div>
-
-    </section>
-
-    <script>
-        function toggleDiseaseInput() {
-            var diseaseSection = document.getElementById("disease-name");
-            var hasDisease = document.getElementById("has_disease").value;
-            diseaseSection.style.display = hasDisease === "Yes" ? "block" : "none";
-            
-            if (hasDisease !== "Yes") {
-                document.getElementById("disease").value = "";
-            }
-        }
-        
-        // Initialize on page load
-        document.addEventListener("DOMContentLoaded", function() {
-            toggleDiseaseInput();
-        });
-    </script>
 </body>
 </html>
